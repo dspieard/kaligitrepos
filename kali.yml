@@ -1,0 +1,47 @@
+---
+- hosts: 127.0.0.1
+  become: yes
+  become_method: sudo
+  gather_facts: True
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  tasks:
+
+    - name: tooling dir
+      file:
+        path: /root/tools/
+        owner: root
+        group: root
+        state: directory
+
+    - name: Install tooling 
+      git:
+        repo: "{{ item.value }}"         
+        dest: "/root/tools/{{ item.key }}"
+        version: master
+      with_dict:  
+        - { impacket: "https://github.com/SecureAuthCorp/impacket.git" } 
+        - { nishang: "https://github.com/samratashok/nishang.git" }  
+        - { LinEnum: "https://github.com/rebootuser/LinEnum.git" } 
+        - { PrivescCheck: "https://github.com/itm4n/PrivescCheck.git" }  
+        - { evil-winrm: "https://github.com/Hackplayers/evil-winrm.git" }  
+        - { dirsearch: "https://github.com/maurosoria/dirsearch.git" } 
+        - { peas: "https://github.com/carlospolop/privilege-escalation-awesome-scripts-suite.git" }
+        - { seclists: "https://github.com/danielmiessler/SecLists.git" } 
+        - { oh-my-tmux: "https://github.com/gpakosz/.tmux.git" } 
+
+    - name: mkdir for pspy64
+      file:
+        path: /root/tools/pspy
+        owner: root
+        group: root
+        state: directory       
+
+    - name: Install pspy64
+      get_url: 
+        url: https://github.com/DominicBreuker/pspy/releases/download/v1.2.0/pspy64
+        dest: /root/tools/pspy64
+        
+
+
+
